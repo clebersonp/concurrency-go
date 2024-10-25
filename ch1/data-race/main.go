@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
 )
 
@@ -9,8 +10,9 @@ import (
 // go run -race ./ch1/data-race/main.go
 
 func main() {
-	raceConditions()
-	badResolutionRaceConditions()
+	//raceConditions()
+	//badResolutionRaceConditions()
+	memoryAccessSync()
 }
 
 // Data race is when one concurrent operation attempts to read a variable while ate some undetermined time another
@@ -37,4 +39,31 @@ func badResolutionRaceConditions() {
 	if data == 0 {
 		fmt.Printf("the value is %v\n", data)
 	}
+}
+
+// memoryAccessSync demonstrates how to synchronize access to a variable.
+// While it solves the DATA RACE issue, it haven't solved the 'race condition'.
+// The order of operations in this function is still nondeterministic.
+// It still don't know which will occur first in any given execution of this function.
+// It can also create maintenance and performance issues.
+// By synchronizing access to the memory in this manner, you are counting on all other developers to follow the same
+// convention now and at the future.
+func memoryAccessSync() {
+	// The following code is not idiomatic Go, but it very simply demonstrates memory access synchronization.
+	var (
+		memoryAccess sync.Mutex
+		data         int
+	)
+	go func() {
+		memoryAccess.Lock()
+		defer memoryAccess.Unlock()
+		data++ // critical section
+	}()
+	memoryAccess.Lock()
+	if data == 0 { // critical section
+		fmt.Println("the value is 0")
+	} else {
+		fmt.Printf("the value is %v:\n", data) // critical section
+	}
+	memoryAccess.Unlock()
 }
