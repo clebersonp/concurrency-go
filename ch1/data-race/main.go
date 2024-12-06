@@ -10,9 +10,9 @@ import (
 // go run -race ./ch1/data-race/main.go
 
 func main() {
-	//raceConditions()
+	raceConditions()
 	//badResolutionRaceConditions()
-	memoryAccessSync()
+	//memoryAccessSync()
 }
 
 // Data race is when one concurrent operation attempts to read a variable while ate some undetermined time another
@@ -24,6 +24,8 @@ func raceConditions() {
 	}()
 	if data == 0 {
 		fmt.Printf("the value is %v\n", data)
+	} else {
+		fmt.Printf("the value %v is greater than 0\n", data)
 	}
 }
 
