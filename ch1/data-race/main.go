@@ -53,6 +53,7 @@ func badResolutionRaceConditions() {
 // By synchronizing access to the memory in this manner, you are counting on all other developers to follow the same
 // convention now and at the future.
 func memoryAccessSync() {
+	// Critical section is a section of code that is not thread safe or that needs exclusive access to a shared resource.
 	// The following code is not idiomatic Go, but it very simply demonstrates memory access synchronization.
 	var (
 		memoryAccess sync.Mutex
